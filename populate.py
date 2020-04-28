@@ -27,17 +27,17 @@ for subject in subjects:
     q2 = get_or_create(session, Question, text=f'Вопрос #2 по {subject.name}', subject=subject)
 
     for question in [q1, q2]:
-        a1 = get_or_create(session, Answer, text='A1', question=question)
-        a2 = get_or_create(session, Answer, text='A2', is_correct=True, question=question)
+        a1 = get_or_create(session, Answer, text=f'Неверный ответ для вопроса {question.id}', question=question)
+        a2 = get_or_create(session, Answer, text=f'Верный ответ для вопроса {question.id}', is_correct=True, question=question)
 
 
 def query_subjects():
     return session.query(Subject).all()
 
 
-def query_questions(subj_name):
-    return session.query(Question).filter_by(subject=subj_name).all()
+def query_questions(subj_key):
+    return session.query(Question).filter_by(subject=subj_key).all()
 
 
-def query_answers():
-    return session.query(Answer).all()
+def query_answers(question_key):
+    return session.query(Answer).filter_by(question=question_key).all()
