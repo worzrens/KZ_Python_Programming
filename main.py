@@ -8,6 +8,7 @@ class TestTask:
             Вопрос 1:
                 1. Ответ 1
                 2. Ответ 2
+            【Подтвердить】
     """
     def __init__(self, root, question_key):
         self.root = root
