@@ -14,12 +14,17 @@ class TestTask:
         self.question = question_key
         self.answer_result = IntVar()
         self.answer_buttons_arr = self.generate_buttons()
+        self.confirm_answer_button = self.generate_confirm_answer_button()
 
     def generate_buttons(self):
         return [self.create_answer_btn(answer) for answer in query_answers(self.question)]
 
-    def select_answer(self):
+    def handle_answer_selection(self):
         print(self.answer_result.get())
+
+    def handle_answer_confirmation(self):
+        answer_id = self.answer_result.get()
+        print(find_answer_by_id(answer_id).is_correct)
 
     def create_answer_btn(self, answ):
         answ_btn = Radiobutton(
@@ -27,10 +32,15 @@ class TestTask:
             text=f"{answ.id}|{answ.text}",
             value=answ.id,
             variable=self.answer_result,
-            command=self.select_answer
+            command=self.handle_answer_selection
         )
         answ_btn.pack()
         return answ_btn
+
+    def generate_confirm_answer_button(self):
+        confirm_button = Button(self.root, text="Далi", command=self.handle_answer_confirmation)
+        confirm_button.pack()
+        return confirm_button
 
 
 window = Tk()

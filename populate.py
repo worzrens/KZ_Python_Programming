@@ -24,6 +24,10 @@ def query_answers(question_key):
     return session.query(Answer).filter_by(question=question_key).all()
 
 
+def find_answer_by_id(answer_id):
+    return session.query(Answer).get(answer_id)
+
+
 """
     Изначальное заполнение бд предметами, вопросами и ответами для них
 """
