@@ -1,11 +1,23 @@
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy.orm import relationship
 
 from init_db import engine
 
+"""
+    Модели для предмета, вопроса, ответов, ученика
+"""
 Base = declarative_base()
 
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
-from sqlalchemy.orm import relationship
+
+class Pupil(Base):
+    __tablename__ = 'pupil'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    overall_score = Column(Integer, default=0)
+
+    def __repr__(self):
+        return f'Pupil: {self.name}| Score: {self.overall_score}'
 
 
 class Subject(Base):

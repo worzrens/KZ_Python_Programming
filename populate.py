@@ -1,24 +1,32 @@
 from models import *
 from init_db import session
-
-
-def get_or_create(session, model, **kwargs):
-    instance = session.query(model).filter_by(**kwargs).first()
-    if instance:
-        return instance
-    else:
-        instance = model(**kwargs)
-        session.add(instance)
-        session.commit()
-        return instance
+from orm_utils import get_or_create
 
 
 def create_subjects(names):
-    if type(names) is str:
-        return get_or_create(session, Subject, name=names)
-    elif type(names) is list:
-        return [get_or_create(session, Subject, name=name) for name in names]
+    return [get_or_create(session, Subject, name=name) for name in names]
 
+
+def query_subjects():
+    return session.query(Subject).all()
+
+
+def query_questions(subject_list):
+    """
+            Такое сложное условие фильтра, потому что SQLAlchemy
+            не поддерживает фильтрацию по релейшнам и нельзя сделать:
+            session.query(Question).filter(subject.in_(subject_list)).all()
+    """
+    return [*session.query(Question).filter(Question.subject_id.in_(subj.id for subj in subject_list)).all()]
+
+
+def query_answers(question_key):
+    return session.query(Answer).filter_by(question=question_key).all()
+
+
+"""
+    Изначальное заполнение бд предметами, вопросами и ответами для них
+"""
 
 subjects = create_subjects(['Математика', 'Украинский', 'Физика'])
 
@@ -31,13 +39,3 @@ for subject in subjects:
         a2 = get_or_create(session, Answer, text=f'Верный ответ для вопроса {question.id}', is_correct=True, question=question)
 
 
-def query_subjects():
-    return session.query(Subject).all()
-
-
-def query_questions(subj_key):
-    return session.query(Question).filter_by(subject=subj_key).all()
-
-
-def query_answers(question_key):
-    return session.query(Answer).filter_by(question=question_key).all()
