@@ -84,14 +84,18 @@ window.geometry('1360x768')
 
 subjects = query_subjects()
 
-subjects_list = Listbox(window, height=len(subjects), width=15, selectmode=MULTIPLE)
+subjects_list = Listbox(window, height=len(subjects), width=18, selectmode=MULTIPLE)
 subjects_list.pack()
 
-for sub in subjects:
-    subjects_list.insert(END, str(sub.name))
-    # questions_count = Label(window, text=f'For {sub.name} are {len(query_questions([sub]))} questions\n',
-    #                         font=('Helvetica', 14, 'bold'))
-    # questions_count.pack()
+
+def update_scores_list():
+    scores_dict = ast.literal_eval(get_pupil_scores())
+    for subject in scores_dict.keys():
+        subjects_list.insert(END,
+                             f'{subject}:  {scores_dict.get(subject).get("score")}/{scores_dict.get(subject).get("answers")}')
+
+
+update_scores_list()
 
 questions = query_questions(subjects)
 current_question = 0
@@ -100,9 +104,6 @@ test_task = TestTask(window, questions[current_question].subject, questions[curr
 
 result_scores = Label(window, text='')
 result_scores.pack()
-
-scores = Label(window, text=f'SCORES: {get_pupil_scores()}', font=('Helvetica', 16, 'bold'))
-scores.pack()
 
 
 def update_current_question():
@@ -114,7 +115,8 @@ def update_current_question():
         new_question = questions[current_question]
     test_task.update_component(new_question)
 
-    scores.config(text=f'SCORES: {get_pupil_scores()}')
+    subjects_list.delete(0, END)
+    update_scores_list()
     window.after(250, update_current_question)
 
 

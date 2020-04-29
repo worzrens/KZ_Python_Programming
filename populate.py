@@ -56,13 +56,13 @@ def save_answer_result(current_subject, score):
     Открытого API у министерства образования нет, а скрапить ДПА
     или, не дай бог, копировать руками, я не буду -- у меня лапки
 """
-subjects = create_subjects(['Математика', 'Украинский', 'Физика'])
+subjects = create_subjects(['Математика', 'Украинский', 'Физика', 'История', 'География'])
 
 for subject in subjects:
-    q1 = get_or_create(session, Question, text=f'Вопрос #1 по {subject.name}', subject=subject)
-    q2 = get_or_create(session, Question, text=f'Вопрос #2 по {subject.name}', subject=subject)
+    questions = [get_or_create(session, Question, text=f'Вопрос #{q} по {subject.name}', subject=subject)
+                 for q in range(1, 6)]
 
-    for question in [q1, q2]:
+    for question in questions:
         a1 = get_or_create(session, Answer, text=f'Неверный ответ для вопроса {question.id}', question=question)
         a2 = get_or_create(session, Answer, text=f'Верный ответ для вопроса {question.id}', is_correct=True, question=question)
 
