@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 
 from init_db import engine
@@ -14,10 +14,10 @@ class Pupil(Base):
     __tablename__ = 'pupil'
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    overall_score = Column(Integer, default=0)
+    scores = Column(String)
 
     def __repr__(self):
-        return f'Pupil: {self.name}| Score: {self.overall_score}'
+        return f'Pupil: {self.name}| Scores: {self.scores}'
 
 
 class Subject(Base):
