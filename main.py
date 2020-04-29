@@ -10,12 +10,19 @@ class TestTask:
                 2. Ответ 2
             【Подтвердить】
     """
+
     def __init__(self, root, question_key):
         self.root = root
         self.question = question_key
+        self.question_component = self.generate_question()
         self.answer_result = IntVar()
         self.answer_buttons_arr = self.generate_buttons()
         self.confirm_answer_button = self.generate_confirm_answer_button()
+
+    def generate_question(self):
+        questions_list = Label(window, text=self.question.text, font=('Helvetica', 16, 'bold'))
+        questions_list.pack()
+        return questions_list
 
     def generate_buttons(self):
         return [self.create_answer_btn(answer) for answer in query_answers(self.question)]
@@ -24,13 +31,19 @@ class TestTask:
         print(self.answer_result.get())
 
     def handle_answer_confirmation(self):
+        global current_question
+        """
+            Такое ужасное условие потому-что Tkinter даже(!) не поддерживает Boolean переменные
+        """
         answer_id = self.answer_result.get()
         print(find_answer_by_id(answer_id).is_correct)
+        current_question += 1
+        self.root.update()
 
     def create_answer_btn(self, answ):
         answ_btn = Radiobutton(
             self.root,
-            text=f"{answ.id}|{answ.text}",
+            text=answ.text,
             value=answ.id,
             variable=self.answer_result,
             command=self.handle_answer_selection
@@ -43,11 +56,16 @@ class TestTask:
         confirm_button.pack()
         return confirm_button
 
+    def update_component(self, new_question):
+        new_answers = query_answers(new_question)
+        self.question_component.config(text=f"{new_question.text}", font=('Helvetica', 16, 'bold'))
+        for answ_id, answer_btn in enumerate(self.answer_buttons_arr):
+            answer_btn.config(text=new_answers[answ_id].text, value=new_answers[answ_id].id)
+
 
 window = Tk()
 window.title("Пiдготовчi курси")
 window.geometry('1360x768')
-
 
 subjects = query_subjects()
 
@@ -60,16 +78,16 @@ for sub in subjects:
     #                         font=('Helvetica', 14, 'bold'))
     # questions_count.pack()
 
+questions = query_questions(subjects)
+current_question = 0
 
-for question in query_questions(subjects):
-    questions_list = Label(window, text=f"{question.text}", font=('Helvetica', 16, 'bold'))
-    questions_list.pack()
-    answered = IntVar()
-
-    test_task = TestTask(window, question)
-
-linebreak = Label(window, text="\n")
-linebreak.pack()
+test_task = TestTask(window, questions[current_question])
 
 
+def update_current_question():
+    test_task.update_component(questions[current_question])
+    window.after(100, update_current_question)
+
+
+update_current_question()
 window.mainloop()
