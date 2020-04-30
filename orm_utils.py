@@ -71,11 +71,11 @@ def show_worst_subject_score():
     }
 
     FINAL_SCORES = list(coeffs.keys())
-    if 1 in FINAL_SCORES:
+    if FINAL_SCORES.count(1) == len(FINAL_SCORES) and len(FINAL_SCORES) > 0:
+        return True
+    elif 1 in FINAL_SCORES:
         FINAL_SCORES.remove(1)
 
     if FINAL_SCORES:
         return coeffs.get(min(FINAL_SCORES))
-    elif FINAL_SCORES.sort() == list(coeffs.keys()).sort():
-        return True
     return None

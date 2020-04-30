@@ -2,6 +2,7 @@ import ast
 from tkinter import *
 
 from orm_utils import query_questions, query_subjects, show_worst_subject_score
+from populate import populate_db
 from test_task import TestTask
 from tkinter_utils import CurrentQuestionTracker, update_scores_list, generate_subjects_list, generate_result_scores
 
@@ -26,6 +27,8 @@ def update_current_question():
     update_scores_list(subjects_list)
     WINDOW.after(250, update_current_question)
 
+
+populate_db()
 
 WINDOW = Tk()
 WINDOW.title("Пiдготовчi курси")
