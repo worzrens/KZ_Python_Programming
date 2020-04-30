@@ -13,12 +13,11 @@ def populate_db():
         Открытого API у министерства образования нет, а скрапить ДПА
         или, не дай бог, копировать руками, я не буду -- у меня лапки
     """
-    # subjects = create_subjects(['Математика', 'Украинский', 'Физика', 'История', 'География'])
-    subjects = create_subjects(['Математика', 'Украинский'])
+    subjects = create_subjects(['Математика', 'Украинский', 'Физика', 'История', 'География'])
 
     for subject in subjects:
         questions = [get_or_create(session, Question, text=f'Вопрос #{q} по {subject.name}', subject=subject)
-                     for q in range(1, 2)]
+                     for q in range(1, 6)]
 
         for question in questions:
             a1 = get_or_create(session, Answer, text=f'Неверный ответ для вопроса {question.id}', question=question)
